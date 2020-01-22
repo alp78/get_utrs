@@ -104,8 +104,6 @@ def get_utrs(gtf, ref_fasta_full_path, _id):
             extract_utrs(gtf, logger)
         except:
             logger.info(colored('Error in parsing GTF file', 'red'))
-            
-            
             del logger
             exit(0)
 
@@ -113,7 +111,6 @@ def get_utrs(gtf, ref_fasta_full_path, _id):
         ensembl_id, gene_symbol = get_ensembl_id(_id, logger)
     except:
         logger.info(colored('Error in retrieving Ensembl ID', 'red'))
-
         del logger
         exit(0)
 
@@ -122,22 +119,16 @@ def get_utrs(gtf, ref_fasta_full_path, _id):
             utr3 = get_3utr(ensembl_id, gene_symbol, logger)
         except:
             logger.info(colored('Error in retrieving 3-UTR', 'red'))
-            
-            
             del logger
             exit(0)
         try:   
             utr5 = get_5utr(ensembl_id, gene_symbol, logger)
         except:
             logger.info(colored('Error in retrieving 5-UTR', 'red'))
-            
-            
             del logger
             exit(0)  
     else:
         logger.info(colored('Error in retrieving Ensembl ID', 'red'))
-        
-        
         del logger
         exit(0)
 
@@ -149,18 +140,12 @@ def get_utrs(gtf, ref_fasta_full_path, _id):
             make_utrs_fasta(ref_fasta_full_path, location_list, logger)
         except:
             logger.info(colored('Error in creating fasta file', 'red'))
-            
-            
             del logger
             exit(0)          
     else:
         logger.info(colored('Error in location list', 'red'))
-        
-        
         del logger
         exit(0)
 
     logger.info(colored('All done!', 'green'))
-    
-    
     del logger
