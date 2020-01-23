@@ -14,21 +14,20 @@ from os import path, remove
 from sys import exit
 from termcolor import colored
 
-def make_utr_tables(gtf, logger):
+def make_utr_table(gtf, _types, logger):
     logger.info(colored('Making UTRs tables...', 'blue'))
+    feature = ''
     gtf_df = read_gtf(gtf)
-    # 3'UTR
-    utr3_df = gtf_df[gtf_df['feature']=='three_prime_utr']
-    utr3_unique = utr3_df.drop_duplicates(subset=['gene_id', 'source'], keep='first')
-    utr3_unique.reset_index(drop=True, inplace=True)
-    utr3_unique = utr3_unique.loc[:, ['source', 'gene_id', 'feature', 'seqname', 'strand', 'start', 'end']]
-    utr3_unique.to_csv('utr3.txt', sep='\t', index = False)
-    # 5'UTR
-    utr5_df = gtf_df[gtf_df['feature']=='five_prime_utr']
-    utr5_unique = utr5_df.drop_duplicates(subset=['gene_id', 'source'], keep='first')
-    utr5_unique.reset_index(drop=True, inplace=True)
-    utr5_unique = utr5_unique.loc[:, ['source', 'gene_id', 'feature', 'seqname', 'strand', 'start', 'end']]
-    utr5_unique.to_csv('utr5.txt', sep='\t', index = False)
+    for _type in _types:
+        if _type == 5:
+            feature = 'five_prime_utr'
+        if _type == 3:
+            feature = 'three_prime_utr'
+        utr_df = gtf_df[gtf_df['feature']==feature]
+        utr_unique = utr_df.drop_duplicates(subset=['gene_id', 'source'], keep='first')
+        utr_unique.reset_index(drop=True, inplace=True)
+        utr_unique = utr_unique.loc[:, ['source', 'gene_id', 'feature', 'seqname', 'strand', 'start', 'end']]
+        utr_unique.to_csv(f'utr{_type}.txt', sep='\t', index = False)
 
 def convert_id(_id, logger):
     logger.info(colored('Converting ID...', 'blue'))
@@ -38,9 +37,9 @@ def convert_id(_id, logger):
     ensembl_id = mg.getgene(entrez_id, 'ensembl')['ensembl']['gene']
     return ensembl_id, gene_symbol
 
-def get_utr(ensembl_id, gene_symbol, type, logger):
-    logger.info(colored(f'Getting {type}-UTR...', 'blue'))
-    utr_unique = pd.read_csv(f'utr{type}.txt', sep='\t', skiprows=(0), header=(0), low_memory=False)
+def get_utr(ensembl_id, gene_symbol, _type, logger):
+    logger.info(colored(f'Getting {_type}-UTR...', 'blue'))
+    utr_unique = pd.read_csv(f'utr{_type}.txt', sep='\t', skiprows=(0), header=(0), low_memory=False)
     choices = utr_unique[utr_unique['gene_id']==ensembl_id]['source'].to_list()
     if len(choices) > 0:
         temp_df = utr_unique[utr_unique['gene_id']==ensembl_id]
@@ -88,7 +87,8 @@ def get_utrs(gtf, ref_fasta_full_path, _id):
 
     if not (path.isfile('utr3.txt') and path.isfile('utr5.txt')):
         try:
-            make_utr_tables(gtf, logger)
+            types = [5,3]
+            make_utr_table(gtf, types, logger)
         except:
             logger.info(colored('Error in parsing GTF file', 'red'))
             del logger
