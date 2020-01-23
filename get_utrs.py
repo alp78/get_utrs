@@ -4,7 +4,7 @@ import mygene
 from gtfparse import read_gtf
 import pybedtools
 import logging
-from os import getcwd, path, remove
+from os import path, remove
 from sys import exit
 from termcolor import colored
 
