@@ -14,7 +14,7 @@ from os import path, remove
 from sys import exit
 from termcolor import colored
 
-def make_utr_table(gtf, _types, logger):
+def make_utr_tables(gtf, _types, logger):
     logger.info(colored('Making UTRs tables...', 'blue'))
     feature = ''
     gtf_df = read_gtf(gtf)
@@ -88,7 +88,7 @@ def get_utrs(gtf, ref_fasta_full_path, _id):
     if not (path.isfile('utr3.txt') and path.isfile('utr5.txt')):
         try:
             types = [5,3]
-            make_utr_table(gtf, types, logger)
+            make_utr_tables(gtf, types, logger)
         except:
             logger.info(colored('Error in parsing GTF file', 'red'))
             del logger
