@@ -124,14 +124,14 @@ def get_utrs(gtf, ref_fasta_full_path, _id):
             logger.info(colored('Error in retrieving 3-UTR', 'red'))
             del logger
             exit(0)
-        try:   
+        try:
             utr5 = get_5utr(ensembl_id, gene_symbol, logger)
         except:
             logger.info(colored('Error in retrieving 5-UTR', 'red'))
             del logger
-            exit(0)  
+            exit(0)
     else:
-        logger.info(colored('Error in retrieving Ensembl ID', 'red'))
+        logger.info(colored('Error in converting ID', 'red'))
         del logger
         exit(0)
 
@@ -142,9 +142,9 @@ def get_utrs(gtf, ref_fasta_full_path, _id):
         try:
             make_utrs_fasta(ref_fasta_full_path, location_list, logger)
         except:
-            logger.info(colored('Error in creating fasta file', 'red'))
+            logger.info(colored('Error in making fasta file', 'red'))
             del logger
-            exit(0)          
+            exit(0)
     else:
         logger.info(colored('Error in location list', 'red'))
         del logger
