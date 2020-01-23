@@ -15,7 +15,7 @@ from sys import exit
 from termcolor import colored
 
 def make_utr_tables(gtf, logger):
-    logger.info(colored('Extracting UTRs from GTF...', 'blue'))
+    logger.info(colored('Making UTRs tables...', 'blue'))
     gtf_df = read_gtf(gtf)
     # 3'UTR
     utr3_df = gtf_df[gtf_df['feature']=='three_prime_utr']
@@ -113,7 +113,7 @@ def get_utrs(gtf, ref_fasta_full_path, _id):
     try:
         ensembl_id, gene_symbol = convert_id(_id, logger)
     except:
-        logger.info(colored('Error in retrieving Ensembl ID', 'red'))
+        logger.info(colored('Error in converting ID', 'red'))
         del logger
         exit(0)
 
