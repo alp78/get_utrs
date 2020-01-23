@@ -31,7 +31,7 @@ def make_utr_tables(gtf, logger):
     utr5_unique.to_csv('utr5.txt', sep='\t', index = False)
 
 def convert_id(_id, logger):
-    logger.info(colored('Retrieving Ensembl ID...', 'blue'))
+    logger.info(colored('Converting ID...', 'blue'))
     mg = mygene.MyGeneInfo()
     entrez_id = mg.query(_id, species='human')['hits'][0]['entrezgene']
     gene_symbol = mg.query(entrez_id, species='human')['hits'][0]['symbol']
