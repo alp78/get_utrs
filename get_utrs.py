@@ -1,7 +1,5 @@
 import pandas as pd
 from Bio import SeqIO
-from Bio.Seq import Seq
-from Bio.Alphabet import generic_dna
 import mygene
 from gtfparse import read_gtf
 import pybedtools
@@ -70,7 +68,6 @@ def make_utrs_fasta(ref_fasta_full_path, location_list, logger):
     logger.info(colored('Cooking FASTA file...', 'blue'))
     recs_list = []
     for location in location_list:
-        print(location)
         strand = location[3]
         loc = pybedtools.BedTool(f"""{location[2]} {location[4]} {location[5]}""", from_string=True)
         fasta = pybedtools.example_filename(ref_fasta_full_path)
@@ -148,4 +145,6 @@ def get_utrs(gtf, ref_fasta_full_path, _id):
         exit(0)
 
     logger.info(colored('All done!', 'green'))
+    for location in location_list:
+        print(location)
     del logger
