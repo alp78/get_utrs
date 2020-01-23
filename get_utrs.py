@@ -38,28 +38,12 @@ def convert_id(_id, logger):
     ensembl_id = mg.getgene(entrez_id, 'ensembl')['ensembl']['gene']
     return ensembl_id, gene_symbol
 
-def get_3utr(ensembl_id, gene_symbol, logger):
-    logger.info(colored('Getting 3-UTR...', 'blue'))
-    utr3_unique = pd.read_csv('utr3.txt', sep='\t', skiprows=(0), header=(0), low_memory=False)
-    choices = utr3_unique[utr3_unique['gene_id']==ensembl_id]['source'].to_list()
+def get_utr(ensembl_id, gene_symbol, type, logger):
+    logger.info(colored(f'Getting {type}-UTR...', 'blue'))
+    utr_unique = pd.read_csv(f'utr{type}.txt', sep='\t', skiprows=(0), header=(0), low_memory=False)
+    choices = utr_unique[utr_unique['gene_id']==ensembl_id]['source'].to_list()
     if len(choices) > 0:
-        temp_df = utr3_unique[utr3_unique['gene_id']==ensembl_id]
-        if 'ensembl' in choices:
-            location = temp_df[temp_df['source']=='ensembl'].values.tolist()[0][-6:]
-        elif 'ensembl_havana' in choices:
-            location = temp_df[temp_df['source']=='ensembl_havana'].values.tolist()[0][-6:]
-        else:
-            location = temp_df[temp_df['source']=='havana'].values.tolist()[0][-6:]
-        location[2] = 'chr' + location[2]
-        location[0] = gene_symbol
-    return location
-
-def get_5utr(ensembl_id, gene_symbol, logger):
-    logger.info(colored('Getting 5-UTR...', 'blue'))
-    utr5_unique = pd.read_csv('utr5.txt', sep='\t', skiprows=(0), header=(0), low_memory=False)
-    choices = utr5_unique[utr5_unique['gene_id']==ensembl_id]['source'].to_list()
-    if len(choices) > 0:
-        temp_df = utr5_unique[utr5_unique['gene_id']==ensembl_id]
+        temp_df = utr_unique[utr_unique['gene_id']==ensembl_id]
         if 'ensembl' in choices:
             location = temp_df[temp_df['source']=='ensembl'].values.tolist()[0][-6:]
         elif 'ensembl_havana' in choices:
@@ -119,13 +103,13 @@ def get_utrs(gtf, ref_fasta_full_path, _id):
 
     if ensembl_id:
         try:
-            utr3 = get_3utr(ensembl_id, gene_symbol, logger)
+            utr3 = get_utr(ensembl_id, gene_symbol, 3, logger)
         except:
             logger.info(colored('Error in retrieving 3-UTR', 'red'))
             del logger
             exit(0)
         try:
-            utr5 = get_5utr(ensembl_id, gene_symbol, logger)
+            utr5 = get_utr(ensembl_id, gene_symbol, 5, logger)
         except:
             logger.info(colored('Error in retrieving 5-UTR', 'red'))
             del logger
