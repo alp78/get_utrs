@@ -10,7 +10,7 @@ from os import getcwd, path, remove
 from sys import exit
 from termcolor import colored
 
-def extract_utrs(gtf, logger):
+def make_utr_tables(gtf, logger):
     logger.info(colored('Extracting UTRs from GTF...', 'blue'))
     gtf_df = read_gtf(gtf)
     # 3'UTR
@@ -26,7 +26,7 @@ def extract_utrs(gtf, logger):
     utr5_unique = utr5_unique.loc[:, ['source', 'gene_id', 'feature', 'seqname', 'strand', 'start', 'end']]
     utr5_unique.to_csv('utr5.txt', sep='\t', index = False)
 
-def get_ensembl_id(_id, logger):
+def convert_id(_id, logger):
     logger.info(colored('Retrieving Ensembl ID...', 'blue'))
     mg = mygene.MyGeneInfo()
     entrez_id = mg.query(_id, species='human')['hits'][0]['entrezgene']
@@ -101,14 +101,14 @@ def get_utrs(gtf, ref_fasta_full_path, _id):
 
     if not (path.isfile('utr3.txt') and path.isfile('utr5.txt')):
         try:
-            extract_utrs(gtf, logger)
+            make_utr_tables(gtf, logger)
         except:
             logger.info(colored('Error in parsing GTF file', 'red'))
             del logger
             exit(0)
 
     try:
-        ensembl_id, gene_symbol = get_ensembl_id(_id, logger)
+        ensembl_id, gene_symbol = convert_id(_id, logger)
     except:
         logger.info(colored('Error in retrieving Ensembl ID', 'red'))
         del logger
